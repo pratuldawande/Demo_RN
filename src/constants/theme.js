@@ -1,0 +1,152 @@
+import { DefaultTheme } from 'react-native-paper';
+
+export const theme = {
+    ...DefaultTheme,
+    roundness: 2,
+    colors: {
+        ...DefaultTheme.colors,
+        standardBlack: '#000000',
+        standardWhite: '#FFFFFF',
+        lightPurple: '#F4EFFE',
+        grey:'#1D1D1D',
+        primary:'#8256E7',
+        blackOne:'#111111'
+    },
+    typography: {
+        heading: {
+            fontFamily: 'Mulish-Bold',
+            fontStyle: 'normal',
+            fontWeight: '600',
+            fontSize: '64px',
+            lineHeight: '72px',
+        },
+        heading2: {
+            fontFamily: 'Mulish-Medium',
+            fontStyle: 'normal',
+            fontWeight: '700',
+            fontSize: 24,
+            lineHeight: 28,
+        },
+        heading4: {
+            fontFamily: 'Mulish-Medium',
+            fontStyle: 'normal',
+            fontWeight: '500',
+            fontSize: 20,
+            lineHeight: 26,
+        },
+        heading5: {
+            fontFamily: 'Mulish-SemiBold',
+            fontStyle: 'normal',
+            fontWeight: '600',
+            fontSize: 16,
+            lineHeight: 24,
+            letterSpacing: 0.25
+        },
+        h1JostBold: {
+            fontFamily: 'Mulish-Medium',
+            fontStyle: 'normal',
+            fontWeight: 'bold',
+            fontSize: 32,
+            lineHeight: 40,
+        },
+        h2JostBold: {
+            fontFamily: 'Mulish-Bold',
+            fontStyle: 'normal',
+            fontWeight: '600',
+            fontSize: 24,
+            lineHeight: 28,
+        },
+        h3JostMedium: {
+            fontFamily: 'Mulish-Medium',
+            fontStyle: 'normal',
+            fontWeight: '500',
+            fontSize: 20,
+            lineHeight: 28,
+            letterSpacing: 0.25,
+        },
+        h4JostSemiBold: {
+            fontFamily: 'Mulish-Medium',
+            fontStyle: 'normal',
+            fontWeight: '600',
+            fontSize: 16,
+            lineHeight: 24,
+            letterSpacing: 0.25,
+            display: 'flex',
+        },
+        body1JostMedium: {
+            fontFamily: 'Mulish-Medium',
+            fontStyle: 'normal',
+            fontWeight: '500',
+            fontSize: 16,
+            lineHeight: 24,
+            letterSpacing: 0.25,
+        },
+        body2JostMedium: {
+            fontFamily: 'Mulish-Medium',
+            fontStyle: 'normal',
+            fontWeight: '500',
+            fontSize: 14,
+            lineHeight: 20,
+            letterSpacing: 0.1,
+        },
+        body2JostSemiBold: {
+            fontFamily: 'Mulish-SemiBold',
+            fontStyle: 'normal',
+            fontWeight: '600',
+            fontSize: 14,
+            lineHeight: 20,
+            letterSpacing: 0.1,
+        },
+        label1JostSemibold: {
+            fontFamily: 'Mulish-Medium',
+            fontStyle: 'normal',
+            fontWeight: '600',
+            fontSize: 12,
+            lineHeight: 14,
+            letterSpacing: 0.2,
+        },
+        label2JostSemibold: {
+            fontFamily: 'Mulish-Medium',
+            fontStyle: 'normal',
+            fontWeight: '500',
+            fontSize: 12,
+            lineHeight: 14,
+            letterSpacing: 0.2,
+        },
+        label3JostSemibold: {
+            fontFamily: 'Mulish-SemiBold',
+            fontStyle: 'normal',
+            fontWeight: '600',
+            fontSize: 10,
+            lineHeight: 16,
+        },
+        headline: {
+            fontFamily: 'Mulish',
+            fontStyle: 'normal',
+            fontWeight: '600',
+            fontSize: 64,
+            lineHeight: 72,
+        },
+        count: {
+            fontFamily: 'Mulish-SemiBold',
+            fontStyle: 'normal',
+            fontWeight: '600',
+            fontSize: 170,
+            lineHeight: 190
+        },
+        timer: {
+            fontFamily: 'Mulish-SemiBold',
+            //fontStyle: 'normal',
+            //fontWeight: '600',
+            fontSize: 72,
+            //lineHeight: 70
+        },
+        price: {
+            fontFamily: 'Mulish-SemiBold',
+            fontStyle: 'normal',
+            fontWeight: '600',
+            fontSize: 54,
+            lineHeight: 72
+        },
+    },
+}
