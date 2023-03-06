@@ -32,25 +32,71 @@ import {loginValidation} from '../../utils/validation';
 import {useHeaderHeight} from '@react-navigation/elements';
 import AppTextInput from '../../components/appSpecific/AppTextInput';
 import AppButton from '../../components/appSpecific/AppButton';
-import {NAVIGATION_TO_OTP_SCREEN} from '../../navigation/routes';
 
-const LoginScreen = ({navigation, setLoadingSpinnerVisibility}) => {
+const OTPScreen = ({navigation, setLoadingSpinnerVisibility}) => {
   const {colors, typography} = useTheme();
   const styles = makeStyles({colors, typography});
   const headerHeight = useHeaderHeight();
-  const [initialFormValues, setInitialFormValues] = useState({});
-
-  useEffect(() => {
-    setInitialFormValues({
-      mobileNumber: '',
-    });
-  }, []);
+  const [otp, setOtp] = useState('');
+  const inputs = useRef([]);
+  const length = 4;
 
   useEffect(() => {}, []);
 
-  const getOtp = values => {
-    console.log(values);
-    navigation.navigate(NAVIGATION_TO_OTP_SCREEN);
+  const getOtp = () => {
+    console.log(otp);
+  };
+
+  const handleChange = (value, index) => {
+    // Only allow digits in OTP input
+    const numRegex = /^[0-9]+$/;
+    if (value && !numRegex.test(value)) {
+      return;
+    }
+
+    // Update OTP value
+    let newOtp = otp;
+    if (value) {
+      newOtp = newOtp.substring(0, index) + value + newOtp.substring(index + 1);
+    } else {
+      newOtp = newOtp.substring(0, index) + newOtp.substring(index + 1);
+    }
+    setOtp(newOtp);
+
+    // Move focus to next input field or submit OTP if all fields are filled
+    if (index < length - 1 && value) {
+      inputs.current[index + 1].focus();
+    }
+  };
+
+  const handleKeyPress = (event, index) => {
+    // Handle backspace key press
+    if (event.nativeEvent.key === 'Backspace' && index > 0) {
+      inputs.current[index - 1].focus();
+    }
+  };
+
+  const renderInputs = () => {
+    const inputArray = [];
+    for (let i = 0; i < length; i++) {
+      inputArray.push(
+        <AppTextInput
+          key={i}
+          textinputRef={ref => {
+            inputs.current[i] = ref;
+          }}
+          maxLength={1}
+          keyboardType="numeric"
+          value={otp[i] || ''}
+          onChangeText={value => handleChange(value, i)}
+          onKeyPress={event => handleKeyPress(event, i)}
+          styleProps={styles.input}
+          iconStyle={styles.iconStyle}
+          containerStyleProps={styles.containerStyleProps}
+        />,
+      );
+    }
+    return inputArray;
   };
 
   return (
@@ -64,63 +110,32 @@ const LoginScreen = ({navigation, setLoadingSpinnerVisibility}) => {
       <View style={styles.topView}>
         <LoginHeader onPress={() => navigation.goBack()} />
       </View>
-      <Formik
-        initialValues={initialFormValues}
-        validationSchema={loginValidation}
-        validateOnMount={true}
-        enableReinitialize
-        onSubmit={getOtp}>
-        {({
-          handleChange,
-          handleBlur,
-          handleSubmit,
-          values,
-          errors,
-          touched,
-          isValid,
-        }) => (
-          <KeyboardAvoidingView
-            style={[styles.scrollView, styles.topView]}
-            behavior={
-              Platform.OS === PLATFORM_IOS
-                ? KeyboardAvoidingViewBehaviourPadding
-                : KeyboardAvoidingViewBehaviourHeight
-            }
-            keyboardVerticalOffset={headerHeight}>
-            <ScrollView
-              showsVerticalScrollIndicator={false}
-              listViewDisplayed={false}
-              contentContainerStyle={styles.scrollView}>
-              <View style={styles.textInputView}>
-                <AppTextInput
-                  onChangeText={handleChange(mobileNumHandleChange)}
-                  onBlur={handleBlur(mobileNumHandleChange)}
-                  value={values.mobileNumber}
-                  styleProps={styles.input}
-                  iconSouce={require('../../assets/images/mobileIcon.png')}
-                  iconStyle={styles.iconStyle}
-                  // keyboardType={keyboardTypePhonePad}
-                />
-              </View>
-              {errors.mobileNumber && touched.mobileNumber && (
-                <Text style={styles.error}>{errors.mobileNumber}</Text>
-              )}
-              <Text style={styles.needMobileNumText}>
-                {loginString.needMobileNum}
-              </Text>
-              <View>
-                <AppButton btnText={continueBtn} onPress={handleSubmit} />
-              </View>
+      <KeyboardAvoidingView
+        style={[styles.scrollView, styles.topView]}
+        behavior={
+          Platform.OS === PLATFORM_IOS
+            ? KeyboardAvoidingViewBehaviourPadding
+            : KeyboardAvoidingViewBehaviourHeight
+        }
+        keyboardVerticalOffset={headerHeight}>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          listViewDisplayed={false}
+          contentContainerStyle={styles.scrollView}>
+          <View style={styles.textInputView}>{renderInputs()}</View>
+          {false && <Text style={styles.error}>error</Text>}
+          <Text style={styles.needMobileNumText}>
+            {loginString.needMobileNum}
+          </Text>
+          <View>
+            <AppButton btnText={continueBtn} onPress={getOtp} />
+          </View>
 
-              <TouchableOpacity
-                style={styles.termAndCondition}
-                onPress={() => {}}>
-                <Text>{loginString.termAndCondition}</Text>
-              </TouchableOpacity>
-            </ScrollView>
-          </KeyboardAvoidingView>
-        )}
-      </Formik>
+          <TouchableOpacity style={styles.termAndCondition} onPress={() => {}}>
+            <Text>{loginString.termAndCondition}</Text>
+          </TouchableOpacity>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };
@@ -136,7 +151,9 @@ const makeStyles = ({colors, typography}) =>
     },
     scrollView: {
       flex: 1,
-      // backgroundColor: 'red',
+    },
+    containerStyleProps: {
+      paddingRight: 0,
     },
     textInputTheme: {
       roundness: '5@ms',
@@ -155,12 +172,8 @@ const makeStyles = ({colors, typography}) =>
         error: colors.alertOrange,
       },
     },
-    textInput: {
-      backgroundColor: colors.lightPurple,
-      height: '56@ms',
-    },
     input: {
-      flex: 1,
+      width: '55@ms',
     },
     error: {
       fontFamily: 'Mulish',
@@ -201,7 +214,9 @@ const makeStyles = ({colors, typography}) =>
     },
     textInputView: {
       marginTop: '158@ms',
+      flexDirection: 'row',
+      justifyContent: 'space-between',
     },
   });
 
-export default withLoadingSpinner()(LoginScreen);
+export default withLoadingSpinner()(OTPScreen);
