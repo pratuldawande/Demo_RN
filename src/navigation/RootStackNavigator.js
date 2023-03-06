@@ -13,11 +13,12 @@ import {
   NAVIGATION_TO_LOGIN_SCREEN,
   NAVIGATION_TO_HOME_SCREEN,
   NAVIGATION_TO_ONBOARDING_SCREEN,
+  NAVIGATION_TO_OTP_SCREEN,
 } from './routes';
 import LoginScreen from '../screens/LoginScreen';
 import HomeScreen from '../screens/HomeScreen';
 import OnboardingScreen from '../screens/OnboardingScreen';
-import {login} from '../constants/StringConstants';
+import OTPScreen from '../screens/OTPScreen';
 
 const AuthenticationStack = createNativeStackNavigator();
 const AuthenticatedStack = createNativeStackNavigator();
@@ -37,6 +38,11 @@ const authenticationRoute = () => (
       component={LoginScreen}
       options={{header: () => null}}
     />
+    <AuthenticationStack.Screen
+      name={NAVIGATION_TO_OTP_SCREEN}
+      component={OTPScreen}
+      options={{header: () => null}}
+    />
   </AuthenticationStack.Navigator>
 );
 
@@ -54,8 +60,7 @@ const RootStackNavigator = ({navigation}) => {
   const {colors, typography} = useTheme();
   const styles = makeStyles({colors, typography});
 
-  useEffect(() => {
-  }, []);
+  useEffect(() => {}, []);
 
   const CustomBackButton = ({navigation}) => {
     return (
