@@ -10,10 +10,12 @@ const LoginHeader = ({onPress}) => {
   return (
     <View style={styles.container}>
       <TouchableOpacity style={styles.backBtnContainer} onPress={onPress}>
-        <Image
-          style={styles.backBtnImage}
-          source={require('../../assets/images/backIcon.png')}
-        />
+        {onPress && (
+          <Image
+            style={styles.backBtnImage}
+            source={require('../../assets/images/backIcon.png')}
+          />
+        )}
       </TouchableOpacity>
       <View style={styles.logoContainer}>
         <Image

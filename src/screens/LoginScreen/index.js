@@ -33,12 +33,23 @@ import {useHeaderHeight} from '@react-navigation/elements';
 import AppTextInput from '../../components/appSpecific/AppTextInput';
 import AppButton from '../../components/appSpecific/AppButton';
 import {NAVIGATION_TO_OTP_SCREEN} from '../../navigation/routes';
+import {useLogin} from '../../api/auth.api';
 
 const LoginScreen = ({navigation, setLoadingSpinnerVisibility}) => {
   const {colors, typography} = useTheme();
   const styles = makeStyles({colors, typography});
   const headerHeight = useHeaderHeight();
   const [initialFormValues, setInitialFormValues] = useState({});
+  const {
+    mutate: login,
+    data,
+    error,
+    isSuccess,
+    isLoading,
+    isError,
+    reset,
+    isIdle,
+  } = useLogin();
 
   useEffect(() => {
     setInitialFormValues({
@@ -46,11 +57,24 @@ const LoginScreen = ({navigation, setLoadingSpinnerVisibility}) => {
     });
   }, []);
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    if (isSuccess && data) {
+      setLoadingSpinnerVisibility(false);
+      navigation.navigate(NAVIGATION_TO_OTP_SCREEN, {
+        contact: data?.data?.contact,
+        id: data?.data?.id,
+      });
+    } else if (isError) {
+      setLoadingSpinnerVisibility(false);
+    }
+  }, [isSuccess, isError]);
 
   const getOtp = values => {
-    console.log(values);
-    navigation.navigate(NAVIGATION_TO_OTP_SCREEN);
+    reset();
+    if (!isLoading) {
+      setLoadingSpinnerVisibility(true);
+      login({contact: values.mobileNumber});
+    }
   };
 
   return (
@@ -62,7 +86,7 @@ const LoginScreen = ({navigation, setLoadingSpinnerVisibility}) => {
         translucent={true}
       />
       <View style={styles.topView}>
-        <LoginHeader onPress={() => navigation.goBack()} />
+        <LoginHeader />
       </View>
       <Formik
         initialValues={initialFormValues}

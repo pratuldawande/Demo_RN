@@ -13,3 +13,9 @@ export const loginString = {
   needMobileNum: 'We need your mobile number to get you signed in',
   termAndCondition: 'Terms Of Use Privacy Policy',
 };
+export const otpString = {
+  dontTell: "Don't tell anyone the code",
+  pleaseEnter: 'Please enter the 4 digit OTP sent to ',
+  expiredIn: 'Expiring In ',
+  resendOTP: 'Resend Code',
+};

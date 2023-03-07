@@ -18,17 +18,6 @@ const OnboardingScreen = ({navigation, setLoadingSpinnerVisibility}) => {
   const styles = makeStyles({colors, typography});
   const [swipperIndex, setSwipperIndex] = useState(0);
 
-  useEffect(()=>{
-    checkShowOnboarding()
-  },[])
-
-  const checkShowOnboarding = async()=>{
-    const showOnboarding = await AppAsyncStorage.getValue(showOnboardingKey)
-    if(JSON.parse(showOnboarding)){
-      setSwipperIndex(2)
-    }
-  }
-
   const onIndexSwipperChanged = index => {
     if(index ===2){
       AppAsyncStorage.setValue(showOnboardingKey,JSON.stringify(true))
