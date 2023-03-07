@@ -2,13 +2,10 @@ import {
   View,
   Text,
   SafeAreaView,
-  Image,
   StatusBar,
   ScrollView,
   TouchableOpacity,
   Platform,
-  Linking,
-  AppState,
   KeyboardAvoidingView,
 } from 'react-native';
 import React, {useState, useEffect, useRef} from 'react';
@@ -18,33 +15,88 @@ import {ScaledSheet} from 'react-native-size-matters';
 import withLoadingSpinner from '../../components/hoc/withLoadingSpinner';
 import {
   statusBarDarkContent,
-  mobileNumHandleChange,
   PLATFORM_IOS,
   KeyboardAvoidingViewBehaviourPadding,
   KeyboardAvoidingViewBehaviourHeight,
-  keyboardTypePhonePad,
   loginString,
   continueBtn,
+  otpString,
 } from '../../constants/StringConstants';
 import LoginHeader from '../../components/appSpecific/LoginHeader';
-import {Formik} from 'formik';
-import {loginValidation} from '../../utils/validation';
 import {useHeaderHeight} from '@react-navigation/elements';
 import AppTextInput from '../../components/appSpecific/AppTextInput';
 import AppButton from '../../components/appSpecific/AppButton';
+import {useLogin, useVerifyOTP} from '../../api/auth.api';
 
-const OTPScreen = ({navigation, setLoadingSpinnerVisibility}) => {
+const OTPScreen = ({navigation, setLoadingSpinnerVisibility, route}) => {
   const {colors, typography} = useTheme();
   const styles = makeStyles({colors, typography});
   const headerHeight = useHeaderHeight();
   const [otp, setOtp] = useState('');
   const inputs = useRef([]);
   const length = 4;
+  const {contact, id} = route.params;
+  const [time, setTime] = useState(5 * 60);
+  const {
+    mutate: login,
+    data,
+    error,
+    isSuccess,
+    isLoading,
+    isError,
+    reset,
+    isIdle,
+  } = useLogin();
+  const {
+    mutate: verifyOTP,
+    data: verifyOTPData,
+    error: verifyOTPError,
+    isSuccess: verifyOTPISuccess,
+    isLoading: verifyOTPIsLoading,
+    isError: verifyOTPIsError,
+  } = useVerifyOTP();
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTime(prevTime => prevTime - 1);
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const minutes = Math.floor(time / 60);
+  const seconds = time % 60;
+
+  useEffect(() => {
+    if (isSuccess && data) {
+      setLoadingSpinnerVisibility(false);
+      setTime(60 * 5);
+    } else if (isError) {
+      setLoadingSpinnerVisibility(false);
+    }
+  }, [isSuccess, isError]);
+
+  useEffect(() => {
+    if (verifyOTPISuccess && verifyOTPData) {
+      setLoadingSpinnerVisibility(false);
+      console.log(verifyOTPData);
+    } else if (verifyOTPIsError) {
+      setLoadingSpinnerVisibility(false);
+      console.log(verifyOTPError);
+    }
+  }, [verifyOTPISuccess, verifyOTPIsError]);
+
+  const resendOTP = () => {
+    setLoadingSpinnerVisibility(true);
+    login({contact: contact});
+  };
 
   const getOtp = () => {
-    console.log(otp);
+    verifyOTP({
+      id: id,
+      res: {
+        otp: otp,
+      },
+    });
   };
 
   const handleChange = (value, index) => {
@@ -122,15 +174,28 @@ const OTPScreen = ({navigation, setLoadingSpinnerVisibility}) => {
           showsVerticalScrollIndicator={false}
           listViewDisplayed={false}
           contentContainerStyle={styles.scrollView}>
+          <Text
+            style={
+              styles.pleaseEnterText
+            }>{`${otpString.pleaseEnter}${contact}`}</Text>
           <View style={styles.textInputView}>{renderInputs()}</View>
-          {false && <Text style={styles.error}>error</Text>}
-          <Text style={styles.needMobileNumText}>
-            {loginString.needMobileNum}
-          </Text>
+          <Text style={styles.dontTellText}>{otpString.dontTell}</Text>
+          {time > 0 ? (
+            <Text style={[styles.dontTellText, styles.timerText]}>
+              {`${otpString.expiredIn} ${minutes
+                .toString()
+                .padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`}
+            </Text>
+          ) : (
+            <TouchableOpacity onPress={resendOTP}>
+              <Text style={[styles.dontTellText, styles.timerText]}>
+                {otpString.resendOTP}
+              </Text>
+            </TouchableOpacity>
+          )}
           <View>
             <AppButton btnText={continueBtn} onPress={getOtp} />
           </View>
-
           <TouchableOpacity style={styles.termAndCondition} onPress={() => {}}>
             <Text>{loginString.termAndCondition}</Text>
           </TouchableOpacity>
@@ -191,17 +256,29 @@ const makeStyles = ({colors, typography}) =>
       width: '14@ms',
       height: '20@ms',
     },
-    needMobileNumText: {
+    dontTellText: {
       fontFamily: 'Mulish',
       fontStyle: 'normal',
       fontWeight: '600',
-      fontSize: 14,
-      lineHeight: 18,
+      fontSize: 12,
+      lineHeight: 16,
       paddingHorizontal: '60@ms',
       fontWeight: 'bold',
       color: colors.fontBlack,
       textAlign: 'center',
-      marginVertical: '50@ms',
+      marginTop: '48@ms',
+    },
+    pleaseEnterText: {
+      fontFamily: 'Mulish',
+      fontStyle: 'normal',
+      fontWeight: '600',
+      fontSize: 14,
+      lineHeight: 22,
+      paddingHorizontal: '60@ms',
+      fontWeight: 'bold',
+      color: colors.fontBlack,
+      textAlign: 'center',
+      marginTop: '70@ms',
     },
     termAndCondition: {
       fontFamily: 'Mulish',
@@ -213,9 +290,13 @@ const makeStyles = ({colors, typography}) =>
       alignItems: 'center',
     },
     textInputView: {
-      marginTop: '158@ms',
+      marginTop: '37@ms',
       flexDirection: 'row',
       justifyContent: 'space-between',
+    },
+    timerText: {
+      marginTop: '5@ms',
+      marginBottom: '100@ms',
     },
   });
 

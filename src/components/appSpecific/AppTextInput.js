@@ -16,7 +16,6 @@ const AppTextInput = ({
   containerStyleProps,
   textinputRef,
   maxLength,
-  key,
   onKeyPress,
 }) => {
   const {colors, typography} = useTheme();
@@ -32,7 +31,6 @@ const AppTextInput = ({
         onBlur={onBlur}
         ref={textinputRef}
         maxLength={maxLength}
-        key={key}
         onKeyPress={onKeyPress}
       />
       {iconSouce && (
