@@ -27,6 +27,7 @@ import {useHeaderHeight} from '@react-navigation/elements';
 import AppTextInput from '../../components/appSpecific/AppTextInput';
 import AppButton from '../../components/appSpecific/AppButton';
 import {useLogin, useVerifyOTP} from '../../api/auth.api';
+import {NAVIGATION_TO_SIGNUP_SCREEN} from '../../navigation/routes';
 
 const OTPScreen = ({navigation, setLoadingSpinnerVisibility, route}) => {
   const {colors, typography} = useTheme();
@@ -78,7 +79,7 @@ const OTPScreen = ({navigation, setLoadingSpinnerVisibility, route}) => {
   useEffect(() => {
     if (verifyOTPISuccess && verifyOTPData) {
       setLoadingSpinnerVisibility(false);
-      console.log(verifyOTPData);
+      navigation.navigate(NAVIGATION_TO_SIGNUP_SCREEN);
     } else if (verifyOTPIsError) {
       setLoadingSpinnerVisibility(false);
       console.log(verifyOTPError);
@@ -91,6 +92,7 @@ const OTPScreen = ({navigation, setLoadingSpinnerVisibility, route}) => {
   };
 
   const getOtp = () => {
+    setLoadingSpinnerVisibility(true);
     verifyOTP({
       id: id,
       res: {

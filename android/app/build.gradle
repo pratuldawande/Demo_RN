@@ -93,9 +93,9 @@ android {
 
     compileSdkVersion rootProject.ext.compileSdkVersion
 
-    namespace "com.idlr_dating"
+    namespace "com.demo_rn"
     defaultConfig {
-        applicationId "com.idlr_dating"
+        applicationId "com.demo_rn"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

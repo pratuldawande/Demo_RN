@@ -19,21 +19,6 @@ axios.interceptors.response.use(
     return res;
   },
   error => {
-    // if (error?.response?.status >= 500) Sentry.captureMessage(error);
-    // if (error.response && error.response.status >= serverError) {
-    //   /* eslint-disable no-param-reassign */
-    //   error.name = `API Error (${error.response.status})`;
-    // }
-    // const errorData = ApiFailMessageFilter(error);
-    // if (errorData.status === API_STATUS.UNAUTHORIZED) {
-    //   // When API auth token expired then remove saved token
-    //   showToast('Sesión expirada', 'error');
-    //   removeAuthInfoCookie();
-    //   resetAllContext();
-    // } else if (errorData.status === 500 || errorData.status === 401) {
-    //   openServerError();
-    // }
-    /* eslint-disable prefer-promise-reject-errors */
     return Promise.reject(error);
   },
 );
@@ -54,14 +39,6 @@ const AxiosService = () => {
   function addHeaders(userConfig) {
     const {params, headers = {}, timeout, ...restConfigs} = userConfig;
     const globalHeaders = {};
-
-    // if (Authorization) {
-    //   globalHeaders[API_HEADER_KEYS.SESSION_TOKEN] = `${Authorization}`;
-    // }
-
-    // if (ApiKey) {
-    //   globalHeaders[API_HEADER_KEYS.API_KEY] = ApiKey;
-    // }
 
     const {...restParams} = params || {};
     return {

@@ -9,6 +9,9 @@ export const KeyboardAvoidingViewBehaviourHeight = 'height';
 export const mobileNumHandleChange = 'mobileNumber';
 export const keyboardTypePhonePad = 'phone-pad';
 export const continueBtn = 'Continue';
+export const nameHandleChange = 'name';
+export const dobHandleChange = 'dob';
+export const genderHandleChange = 'gender';
 export const loginString = {
   needMobileNum: 'We need your mobile number to get you signed in',
   termAndCondition: 'Terms Of Use Privacy Policy',
